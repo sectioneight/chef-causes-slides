@@ -3,37 +3,134 @@
   %head
     %meta{:charset => "utf-8"}/
     %title Presentation title
-    %meta{:content => "Greg Hurrell", :name => "author"}/
+    %meta{:content => "Aiden Scandella", :name => "author"}/
     %link{:href => "http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic", :rel => "stylesheet", :type => "text/css"}/
     %link{:href => "reveal/css/reset.css", :rel => "stylesheet"}/
     %link{:href => "reveal/css/main.css", :rel => "stylesheet"}/
     %link{:href => "highlight/src/styles/solarized_dark.css", :rel => "stylesheet"}/
     / overrides for default reveal styles
     :css
-      #reveal pre {
-        font-size: 24px;
+      .reveal section.logo {
+        margin-top: -100px
+      }
+      .reveal section.logo img {
+        -webkit-box-shadow: none;
+        background: none;
+        border: 0;
+      }
+      .reveal pre {
+        font-size: 20px;
+      }
+      p.citation {
+        font-size: 16px;
       }
   %body
     .reveal
       .slides
 
-        %section
-          %h1 Presentation title
+        %section.logo
+          %img{src: 'img/chef-logo.png'}
 
         %section
-          %h2 Slide title
+          %h1 Chef: What?
+          %h2.fragment or, &ldquo;How to Have Fun Managing Your Infrastructure&rdquo;
+
+        %section
+          %h2 Chef?
           %ul
             %li.fragment
-              A bullet point
+              Open-source systems integration framework
             %li.fragment
-              Another bullet point
-              %pre.fragment
-                %code.language-ruby{:contenteditable => ""}
-                  :preserve
-                    # this is Ruby code
-                    &lt;%= @cause.name %&gt;
-            %li.fragment
-              Another bullet point
+              Ruby with a DSL sprinkled on top
+            %pre.fragment
+              %code.language-ruby{:contenteditable => ""}
+                :preserve
+                  # This is our nginx recipe
+                  package 'nginx'
+
+                  service 'nginx' do
+                    action [ :enable, :start ]
+                    supports :restart =&gt; true, :reload =&gt; true
+                  end
+
+                  cookbook_file '/etc/nginx/mime.types' do
+                    mode     0644
+                    notifies :reload, 'service[nginx]'
+                  end
+
+        %section
+          %h2 Architecture
+          %img.fragment{src: 'img/chef-server-arch.png'}
+          %p.fragment.citation
+            source:
+            %a{href: 'http://wiki.opscode.com/display/chef/Architecture'}
+              http://wiki.opscode.com/display/chef/Architecture
+
+        %section
+          %h2 Terminology
+          %ul
+            %li.fragment Clients
+            %li.fragment Nodes
+            %li.fragment Attributes
+            %li.fragment Recipes
+            %li.fragment Cookbooks
+            %li.fragment Roles
+            %li.fragment Databags
+
+          %p.fragment.citation
+            see:
+            %a{href: 'http://wiki.opscode.com/display/chef/A+Can+of+Condensed+Chef+Documentation'}
+              http://wiki.opscode.com/display/chef/A+Can+of+Condensed+Chef+Documentation
+
+        %section
+          %h2 Clients
+          %ul
+            %li.fragment API consumer
+            %li.fragment Authenticated via SSL
+            %li.fragment Includes both machines (nodes) and administrators (people)
+
+        %section
+          %h2 Nodes
+          %ul
+            %li.fragment Represent a machine
+            %li.fragment Stored on chef-server as JSON
+
+        %section
+          %h2 Attributes
+          %ul
+            %li.fragment Free-form JSON
+            %li.fragment Contain configuration information, auto-populated node description
+            %li.fragment Can come from many places (environments, cookbooks, ohai, you)
+
+        %section
+          %h2 Recipes
+          %ul
+            %li.fragment Runtime ruby execution
+            %li.fragment Server-aware
+            %li.fragment How the sausage is made
+
+        %section
+          %h2 Cookbooks
+          %ul
+            %li.fragment Grouping of recipes, attributes
+            %li.fragment Also contain files, templates, libraries
+
+        %section
+          %h2 Roles
+          %ul
+            %li.fragment Grouping of roles, recipes, and attributes
+            %li.fragment Semantic representation of what a node "does"
+
+        %section
+          %h2 Databags
+          %ul
+            %li.fragment JSON structures to be used in recipes
+            %li.fragment Stored on chef-server, optionally encrypted
+            %li.fragment Fun to say out loud
+
+
+        %section
+          %h1 Now, let's write some code
 
       /
         required for correct operation of reveal.js,
